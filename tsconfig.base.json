@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "baseUrl": ".",
+    "paths": {
+      "@forgeai/ui": ["packages/ui/src"],
+      "@forgeai/types": ["packages/types/src"],
+      "@forgeai/utils": ["packages/utils/src"],
+      "@forgeai/database": ["packages/database/src"],
+      "@forgeai/auth": ["packages/auth/src"],
+      "@forgeai/sdk": ["packages/sdk/src"],
+      "@forgeai/logger": ["packages/logger/src"],
+      "@forgeai/config": ["packages/config/src"],
+      "@forgeai/agents": ["packages/agents/src"],
+      "@forgeai/workflow": ["packages/workflow/src"]
+    }
+  }
+}

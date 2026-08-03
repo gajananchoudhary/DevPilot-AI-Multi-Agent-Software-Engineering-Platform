@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+.git
+.turbo
+.env
+*.log
+packages/database/generated

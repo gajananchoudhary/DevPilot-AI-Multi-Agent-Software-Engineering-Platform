@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String                 @id @default(uuid())
+  email         String                 @unique
+  name          String?
+  passwordHash  String
+  memberships   WorkspaceMembership[]
+  refreshTokens RefreshToken[]
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+}
+
+model Workspace {
+  id          String                 @id @default(uuid())
+  name        String
+  slug        String                 @unique
+  projects    Project[]
+  memberships WorkspaceMembership[]
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+}
+
+model WorkspaceMembership {
+  id          String        @id @default(uuid())
+  role        WorkspaceRole @default(MEMBER)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+  createdAt   DateTime      @default(now())
+
+  @@unique([userId, workspaceId])
+}
+
+model Project {
+  id            String         @id @default(uuid())
+  name          String
+  repositoryUrl String?
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId   String
+  conversations Conversation[]
+  workflows     WorkflowRun[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  title     String
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  role           MessageRole
+  content        String
+  agentKind      AgentKind?
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  createdAt      DateTime     @default(now())
+}
+
+model WorkflowRun {
+  id        String             @id @default(uuid())
+  name      String
+  status    WorkflowRunStatus  @default(PENDING)
+  project   Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+  TOOL
+}
+
+enum AgentKind {
+  ARCHITECT
+  ENGINEER
+  REVIEWER
+  DOCUMENTER
+  DEVOPS
+}
+
+enum WorkflowRunStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
