@@ -7,7 +7,7 @@ export class ForgeClient {
   constructor(private readonly options: ForgeClientOptions) {}
 
   async health() {
-    const response = await fetch(`${this.options.baseUrl}/api/health`, {
+    const response = await fetch(`${this.options.baseUrl}/api/v1/health`, {
       headers: this.options.accessToken
         ? { Authorization: `Bearer ${this.options.accessToken}` }
         : undefined

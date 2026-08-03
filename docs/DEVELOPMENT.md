@@ -34,7 +34,19 @@ cp .env.example .env
 Generate the Prisma client:
 
 ```bash
-pnpm --filter @forgeai/database db:generate
+pnpm db:generate
+```
+
+Apply migrations:
+
+```bash
+pnpm db:migrate
+```
+
+Seed default roles, permissions, and administrator:
+
+```bash
+pnpm db:seed
 ```
 
 Run the monorepo in development:
@@ -53,3 +65,7 @@ pnpm build
 ```
 
 The pre-commit hook runs linting and type checking.
+
+## Configuration
+
+All executables load configuration through `@forgeai/config`. Do not import `dotenv` in apps, packages, Prisma scripts, tests, or seed files. Add new environment variables to `packages/config/src/schema.ts` and `.env.example`.

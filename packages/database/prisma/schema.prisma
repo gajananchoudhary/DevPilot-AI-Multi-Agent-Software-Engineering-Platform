@@ -8,116 +8,139 @@ datasource db {
 }
 
 model User {
-  id            String                 @id @default(uuid())
-  email         String                 @unique
+  id            String         @id @default(uuid())
+  email         String         @unique
   name          String?
   passwordHash  String
-  memberships   WorkspaceMembership[]
+  status        UserStatus     @default(ACTIVE)
+  roles         UserRole[]
+  sessions      UserSession[]
   refreshTokens RefreshToken[]
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
-}
-
-model Workspace {
-  id          String                 @id @default(uuid())
-  name        String
-  slug        String                 @unique
-  projects    Project[]
-  memberships WorkspaceMembership[]
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
-}
-
-model WorkspaceMembership {
-  id          String        @id @default(uuid())
-  role        WorkspaceRole @default(MEMBER)
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId String
-  createdAt   DateTime      @default(now())
-
-  @@unique([userId, workspaceId])
-}
-
-model Project {
-  id            String         @id @default(uuid())
-  name          String
-  repositoryUrl String?
-  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId   String
-  conversations Conversation[]
-  workflows     WorkflowRun[]
+  auditLogs     AuditLog[]     @relation("ActorAuditLogs")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+
+  @@index([email])
+  @@index([deletedAt])
 }
 
-model Conversation {
-  id        String    @id @default(uuid())
-  title     String
-  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String
-  messages  Message[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+model Role {
+  id          String           @id @default(uuid())
+  name        String           @unique
+  description String?
+  users       UserRole[]
+  permissions RolePermission[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deletedAt   DateTime?
+
+  @@index([deletedAt])
 }
 
-model Message {
-  id             String       @id @default(uuid())
-  role           MessageRole
-  content        String
-  agentKind      AgentKind?
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  conversationId String
-  createdAt      DateTime     @default(now())
+model Permission {
+  id          String           @id @default(uuid())
+  key         String           @unique
+  description String?
+  roles       RolePermission[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deletedAt   DateTime?
+
+  @@index([deletedAt])
 }
 
-model WorkflowRun {
-  id        String             @id @default(uuid())
-  name      String
-  status    WorkflowRunStatus  @default(PENDING)
-  project   Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
+model UserRole {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+}
+
+model RolePermission {
+  id           String     @id @default(uuid())
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId       String
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  permissionId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
-  tokenHash String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  expiresAt DateTime
-  revokedAt DateTime?
-  createdAt DateTime @default(now())
+  id         String       @id @default(uuid())
+  tokenHash  String       @unique
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  session    UserSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId  String
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  replacedBy String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([revokedAt])
 }
 
-enum WorkspaceRole {
-  OWNER
-  ADMIN
-  MEMBER
-  VIEWER
+model UserSession {
+  id            String         @id @default(uuid())
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  userAgent     String?
+  ipAddress     String?
+  revokedAt     DateTime?
+  lastActivityAt DateTime      @default(now())
+  refreshTokens RefreshToken[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+
+  @@index([userId])
+  @@index([revokedAt])
+  @@index([deletedAt])
 }
 
-enum MessageRole {
-  USER
-  ASSISTANT
-  SYSTEM
-  TOOL
+model AuditLog {
+  id        String      @id @default(uuid())
+  action    AuditAction
+  actor     User?       @relation("ActorAuditLogs", fields: [actorId], references: [id], onDelete: SetNull)
+  actorId   String?
+  targetId  String?
+  targetType String?
+  metadata  Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([actorId])
+  @@index([action])
+  @@index([targetType, targetId])
 }
 
-enum AgentKind {
-  ARCHITECT
-  ENGINEER
-  REVIEWER
-  DOCUMENTER
-  DEVOPS
+enum UserStatus {
+  ACTIVE
+  DISABLED
 }
 
-enum WorkflowRunStatus {
-  PENDING
-  RUNNING
-  SUCCEEDED
-  FAILED
-  CANCELED
+enum AuditAction {
+  USER_REGISTERED
+  USER_LOGIN
+  USER_LOGOUT
+  USER_LOGOUT_ALL
+  TOKEN_REFRESHED
+  ROLE_ASSIGNED
+  PERMISSION_ASSIGNED
 }

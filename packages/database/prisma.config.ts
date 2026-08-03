@@ -1,8 +1,5 @@
-import "dotenv/config";
-
+import { env } from "@forgeai/config";
 import { defineConfig } from "prisma/config";
-
-const defaultDatabaseUrl = "postgresql://forgeai:forgeai@localhost:5432/forgeai?schema=public";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -10,6 +7,6 @@ export default defineConfig({
     path: "prisma/migrations"
   },
   datasource: {
-    url: process.env.DATABASE_URL ?? defaultDatabaseUrl
+    url: env.DATABASE_URL
   }
 });

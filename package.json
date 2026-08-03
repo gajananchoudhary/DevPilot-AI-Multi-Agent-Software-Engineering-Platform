@@ -10,6 +10,12 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "db:deploy": "pnpm --filter @forgeai/database db:deploy",
+    "db:generate": "pnpm --filter @forgeai/database db:generate",
+    "db:migrate": "pnpm --filter @forgeai/database db:migrate",
+    "db:reset": "pnpm --filter @forgeai/database db:reset",
+    "db:seed": "pnpm --filter @forgeai/database db:seed",
+    "db:studio": "pnpm --filter @forgeai/database db:studio",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
