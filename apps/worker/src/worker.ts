@@ -1,4 +1,4 @@
-import { env } from "@forgeai/config";
+import { workerEnv } from "@forgeai/config/worker";
 import { logger } from "@forgeai/logger";
 import { WORKFLOW_QUEUE_NAME, redisConnectionOptions } from "@forgeai/workflow";
 import { Worker } from "bullmq";
@@ -10,7 +10,7 @@ const worker = new Worker(
     return Promise.resolve({ processedAt: new Date().toISOString() });
   },
   {
-    connection: redisConnectionOptions(env.REDIS_URL)
+    connection: redisConnectionOptions(workerEnv.REDIS_URL)
   }
 );
 

@@ -1,4 +1,4 @@
-import { env } from "@forgeai/config";
+import { apiEnv } from "@forgeai/config/api";
 
 export const openApiDocument = {
   components: {
@@ -66,7 +66,7 @@ export const openApiDocument = {
   info: {
     description: "ForgeAI backend foundation API for identity, sessions, and RBAC.",
     title: "ForgeAI API",
-    version: env.APP_VERSION
+    version: apiEnv.APP_VERSION
   },
   openapi: "3.0.3",
   paths: {
@@ -228,7 +228,7 @@ export const openApiDocument = {
   },
   servers: [
     {
-      url: env.API_URL
+      url: apiEnv.API_URL
     }
   ]
 } as const;

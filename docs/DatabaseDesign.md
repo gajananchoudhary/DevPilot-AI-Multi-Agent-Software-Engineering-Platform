@@ -40,4 +40,4 @@ Root scripts are provided so developers do not need to remember package filters:
 
 ## Configuration Lifecycle
 
-Prisma commands, the seed script, the API, tests, and worker all import validated configuration from `@forgeai/config`. The Prisma config reads `env.DATABASE_URL` from that package and does not load dotenv itself. This avoids hard-coded local ports and ensures the same database URL is used by migrations, seed data, and runtime code.
+Prisma commands import `databaseEnv` from `@forgeai/config/database`; the seed script also imports `authEnv` for administrator bootstrap values. Prisma config reads `databaseEnv.DATABASE_URL` and does not load dotenv itself. This avoids hard-coded local ports while keeping Prisma independent from JWT, Redis, AI, and other application-only settings.

@@ -26,6 +26,7 @@
       "@forgeai/sdk": ["packages/sdk/src"],
       "@forgeai/logger": ["packages/logger/src"],
       "@forgeai/config": ["packages/config/src"],
+      "@forgeai/config/*": ["packages/config/src/*"],
       "@forgeai/agents": ["packages/agents/src"],
       "@forgeai/workflow": ["packages/workflow/src"]
     }

@@ -1,5 +1,5 @@
 import { hashPassword } from "@forgeai/auth";
-import { env } from "@forgeai/config";
+import { authEnv } from "@forgeai/config/auth";
 
 import { prisma } from "../src/index.js";
 
@@ -86,16 +86,16 @@ async function main() {
 
   const administrator = await prisma.user.upsert({
     create: {
-      email: env.ADMIN_EMAIL.toLowerCase(),
-      name: env.ADMIN_NAME,
-      passwordHash: await hashPassword(env.ADMIN_PASSWORD)
+      email: authEnv.ADMIN_EMAIL.toLowerCase(),
+      name: authEnv.ADMIN_NAME,
+      passwordHash: await hashPassword(authEnv.ADMIN_PASSWORD)
     },
     update: {
       deletedAt: null,
-      name: env.ADMIN_NAME,
+      name: authEnv.ADMIN_NAME,
       status: "ACTIVE"
     },
-    where: { email: env.ADMIN_EMAIL.toLowerCase() }
+    where: { email: authEnv.ADMIN_EMAIL.toLowerCase() }
   });
 
   await prisma.userRole.upsert({

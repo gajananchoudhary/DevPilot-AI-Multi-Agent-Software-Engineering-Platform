@@ -1,6 +1,6 @@
 import http from "node:http";
 
-import { env } from "@forgeai/config";
+import { apiEnv } from "@forgeai/config/api";
 import { prisma } from "@forgeai/database";
 import { logger } from "@forgeai/logger";
 
@@ -9,8 +9,8 @@ import { createApp } from "./app.js";
 const app = createApp();
 const server = http.createServer(app);
 
-server.listen(env.API_PORT, () => {
-  logger.info({ port: env.API_PORT }, "ForgeAI API listening");
+server.listen(apiEnv.API_PORT, () => {
+  logger.info({ port: apiEnv.API_PORT }, "ForgeAI API listening");
 });
 
 function shutdown(signal: NodeJS.Signals) {

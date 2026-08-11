@@ -35,7 +35,9 @@ export const envSchema = z.object({
   ADMIN_NAME: z.string().default("ForgeAI Administrator"),
   WORKER_CONCURRENCY: z.coerce.number().int().positive().default(5),
   QUEUE_PREFIX: z.string().default("forgeai"),
-  OPENAI_API_KEY: z.string().optional()
+  OPENAI_API_KEY: z.string().optional(),
+  OPENAI_EMBEDDING_MODEL: z.string().default("text-embedding-3-small"),
+  OPENAI_MODEL: z.string().default("gpt-4o-mini")
 });
 
 export type ForgeEnv = z.infer<typeof envSchema>;

@@ -113,6 +113,9 @@ importers:
 
   apps/web:
     dependencies:
+      "@forgeai/config":
+        specifier: workspace:*
+        version: link:../../packages/config
       "@forgeai/sdk":
         specifier: workspace:*
         version: link:../../packages/sdk

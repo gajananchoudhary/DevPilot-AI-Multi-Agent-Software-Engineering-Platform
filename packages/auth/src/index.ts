@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 
-import { env } from "@forgeai/config";
+import { apiEnv } from "@forgeai/config/api";
 import bcrypt from "bcryptjs";
 import jwt, { type SignOptions } from "jsonwebtoken";
 
@@ -36,25 +36,25 @@ export function hashToken(token: string) {
 }
 
 export function signAccessToken(payload: Omit<AuthTokenPayload, "type">) {
-  return jwt.sign({ ...payload, type: "access" }, env.JWT_ACCESS_SECRET, {
-    audience: env.JWT_AUDIENCE,
-    expiresIn: env.JWT_ACCESS_EXPIRES_IN as SignOptions["expiresIn"],
-    issuer: env.JWT_ISSUER
+  return jwt.sign({ ...payload, type: "access" }, apiEnv.JWT_ACCESS_SECRET, {
+    audience: apiEnv.JWT_AUDIENCE,
+    expiresIn: apiEnv.JWT_ACCESS_EXPIRES_IN as SignOptions["expiresIn"],
+    issuer: apiEnv.JWT_ISSUER
   });
 }
 
 export function signRefreshJwt(payload: Omit<AuthTokenPayload, "type">) {
-  return jwt.sign({ ...payload, type: "refresh" }, env.JWT_REFRESH_SECRET, {
-    audience: env.JWT_AUDIENCE,
-    expiresIn: env.JWT_REFRESH_EXPIRES_IN as SignOptions["expiresIn"],
-    issuer: env.JWT_ISSUER
+  return jwt.sign({ ...payload, type: "refresh" }, apiEnv.JWT_REFRESH_SECRET, {
+    audience: apiEnv.JWT_AUDIENCE,
+    expiresIn: apiEnv.JWT_REFRESH_EXPIRES_IN as SignOptions["expiresIn"],
+    issuer: apiEnv.JWT_ISSUER
   });
 }
 
 export function verifyAccessToken(token: string) {
-  const payload = jwt.verify(token, env.JWT_ACCESS_SECRET, {
-    audience: env.JWT_AUDIENCE,
-    issuer: env.JWT_ISSUER
+  const payload = jwt.verify(token, apiEnv.JWT_ACCESS_SECRET, {
+    audience: apiEnv.JWT_AUDIENCE,
+    issuer: apiEnv.JWT_ISSUER
   }) as VerifiedAuthToken;
 
   if (payload.type !== "access") {
@@ -65,9 +65,9 @@ export function verifyAccessToken(token: string) {
 }
 
 export function verifyRefreshJwt(token: string) {
-  const payload = jwt.verify(token, env.JWT_REFRESH_SECRET, {
-    audience: env.JWT_AUDIENCE,
-    issuer: env.JWT_ISSUER
+  const payload = jwt.verify(token, apiEnv.JWT_REFRESH_SECRET, {
+    audience: apiEnv.JWT_AUDIENCE,
+    issuer: apiEnv.JWT_ISSUER
   }) as VerifiedAuthToken;
 
   if (payload.type !== "refresh") {

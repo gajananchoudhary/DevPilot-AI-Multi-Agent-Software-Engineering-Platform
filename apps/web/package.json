@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@forgeai/config": "workspace:*",
     "@forgeai/sdk": "workspace:*",
     "@forgeai/types": "workspace:*",
     "@forgeai/ui": "workspace:*",

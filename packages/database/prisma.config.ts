@@ -1,4 +1,4 @@
-import { env } from "@forgeai/config";
+import { databaseEnv } from "@forgeai/config/database";
 import { defineConfig } from "prisma/config";
 
 export default defineConfig({
@@ -7,6 +7,6 @@ export default defineConfig({
     path: "prisma/migrations"
   },
   datasource: {
-    url: env.DATABASE_URL
+    url: databaseEnv.DATABASE_URL
   }
 });

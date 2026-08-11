@@ -1,12 +1,13 @@
+import { webEnv } from "@forgeai/config/web";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: Number(process.env.WEB_PORT ?? 5173),
+    port: webEnv.WEB_PORT,
     proxy: {
-      "/api": process.env.API_URL ?? "http://localhost:4000"
+      "/api": webEnv.API_URL
     }
   }
 });

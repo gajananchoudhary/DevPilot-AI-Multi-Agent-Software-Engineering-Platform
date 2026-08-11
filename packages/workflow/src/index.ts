@@ -1,4 +1,4 @@
-import { env } from "@forgeai/config";
+import { workerEnv } from "@forgeai/config/worker";
 import { Queue } from "bullmq";
 
 export const WORKFLOW_QUEUE_NAME = "forgeai.workflow";
@@ -11,7 +11,7 @@ export interface EnqueueWorkflowInput {
 
 export function createWorkflowQueue() {
   return new Queue<EnqueueWorkflowInput>(WORKFLOW_QUEUE_NAME, {
-    connection: redisConnectionOptions(env.REDIS_URL)
+    connection: redisConnectionOptions(workerEnv.REDIS_URL)
   });
 }
 

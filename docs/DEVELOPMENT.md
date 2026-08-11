@@ -68,4 +68,4 @@ The pre-commit hook runs linting and type checking.
 
 ## Configuration
 
-All executables load configuration through `@forgeai/config`. Do not import `dotenv` in apps, packages, Prisma scripts, tests, or seed files. Add new environment variables to `packages/config/src/schema.ts` and `.env.example`.
+All executables load configuration through `@forgeai/config`. Do not import `dotenv` in apps, packages, Prisma scripts, tests, or seed files. Import the narrow domain module (for example, `@forgeai/config/database`) and add new variables to that module and `.env.example`. See [environment architecture](architecture/environment.md).
